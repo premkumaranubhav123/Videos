@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Legacy Video Gallery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #f8f8f8;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3.2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to right, #d4af37, #ffd700, #d4af37);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        @media (min-width: 992px) {
+            .main-content {
+                flex-direction: row;
+            }
+        }
+
+        .video-container {
+            flex: 3;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .video-player {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+        }
+
+        .video-player iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-info {
+            margin-top: 20px;
+        }
+
+        .video-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #d4af37;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .video-title i {
+            font-size: 1.5rem;
+        }
+
+        .video-description {
+            opacity: 0.9;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .playlist {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 700px;
+            overflow-y: auto;
+        }
+
+        .playlist h2 {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1.8rem;
+            color: #d4af37;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .playlist-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .playlist-item.active {
+            background: rgba(212, 175, 55, 0.2);
+            border-left: 4px solid #d4af37;
+        }
+
+        .playlist-item .video-thumb {
+            width: 70px;
+            height: 50px;
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            border-radius: 6px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #d4af37;
+        }
+
+        .playlist-item .video-details {
+            flex: 1;
+        }
+
+        .playlist-item .video-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .playlist-item .video-duration {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 25px;
+            opacity: 0.8;
+            font-size: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Scrollbar styling */
+        .playlist::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .playlist::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .playlist::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.5);
+            border-radius: 10px;
+        }
+
+        .playlist::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 0.7);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(to right, #d4af37, #b8941f);
+            color: #1a1a2e;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn i {
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .video-title {
+                font-size: 1.5rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-crown"></i> Royal Legacy Video Gallery</h1>
+            <p class="subtitle">Explore the rich history and culture of royal dynasties through this exclusive collection of videos</p>
+        </header>
+
+        <div class="main-content">
+            <div class="video-container">
+                <div class="video-player">
+                    <iframe id="main-video" src="https://drive.google.com/file/d/1sb0XpXiCPme3ySx7pMi3HUXFGf2WIxyv/preview" 
+                            allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                </div>
+                <div class="video-info">
+                    <h2 class="video-title"><i class="fas fa-play-circle"></i> <span id="current-video-title">Kannauj Legacy</span></h2>
+                    <p class="video-description" id="current-video-description">Discover the ancient heritage and historical significance of Kannauj, a city that once served as the capital of powerful empires in Northern India.</p>
+                </div>
+                <div class="controls">
+                    <button class="btn" id="prev-btn"><i class="fas fa-arrow-left"></i> Previous Video</button>
+                    <button class="btn" id="next-btn">Next Video <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <div class="playlist">
+                <h2><i class="fas fa-list"></i> Video Playlist</h2>
+                <div class="playlist-items" id="playlist-items">
+                    <!-- Playlist items will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Royal Legacy Video Gallery &copy; 2023 | All videos are hosted on Google Drive</p>
+        </footer>
+    </div>
+
+    <script>
+        // Video data with proper Google Drive links
+        const videos = [
+            { 
+                id: 'kannauj-legacy', 
+                name: 'Kannauj Legacy', 
+                description: 'Discover the ancient heritage and historical significance of Kannauj, a city that once served as the capital of powerful empires in Northern India.',
+                driveId: '1sb0XpXiCPme3ySx7pMi3HUXFGf2WIxyv',
+                duration: '12:45',
+                icon: 'fas fa-landmark'
+            },
+            { 
+                id: 'coronation-glory', 
+                name: 'Coronation Glory', 
+                description: 'Witness the grandeur and ceremonial splendor of royal coronations through the ages, with intricate rituals and majestic celebrations.',
+                driveId: '1e7OqD1Z3WOmgGMPYqeB6bWf4QQG0snZa',
+                duration: '15:20',
+                icon: 'fas fa-crown'
+            },
+            { 
+                id: 'warrior-kings', 
+                name: 'Warrior Kings', 
+                description: 'Explore the lives of legendary monarchs who led their armies into battle and expanded their kingdoms through military prowess.',
+                driveId: '1teO5_DhnsxJXZY_FG5sEDKezuEddLNL6',
+                duration: '18:35',
+                icon: 'fas fa-shield-alt'
+            },
+            { 
+                id: 'music-art', 
+                name: 'Music & Art', 
+                description: 'Delve into the artistic and musical traditions that flourished under royal patronage, creating timeless masterpieces.',
+                driveId: '12SEbwZb_5Lr9r953CB41P1EnYSTHkoMk',
+                duration: '14:10',
+                icon: 'fas fa-music'
+            },
+            { 
+                id: 'court-life', 
+                name: 'Court Life', 
+                description: 'Step inside the royal courts to experience the politics, intrigue, and daily life of nobility in historical kingdoms.',
+                driveId: '1mLxbi7-WKUeZXjgPsXpYMxJqjKKA8Sx1',
+                duration: '16:45',
+                icon: 'fas fa-gem'
+            },
+            { 
+                id: 'royal-sports', 
+                name: 'Royal Sports', 
+                description: 'From hunting expeditions to traditional games, discover the recreational activities enjoyed by royalty across different cultures.',
+                driveId: '1OnlEuqx5PaNz_f--EEW3-U_K_NJgVExX',
+                duration: '13:30',
+                icon: 'fas fa-horse'
+            },
+            { 
+                id: 'royal-patronage', 
+                name: 'Royal Patronage', 
+                description: 'Learn how monarchs supported the arts, sciences, and architecture, leaving behind a rich cultural legacy for future generations.',
+                driveId: '1ZiHmxHdhTNPy-tV_i1e-xkfGQs_atBLH',
+                duration: '17:15',
+                icon: 'fas fa-hand-holding-heart'
+            },
+            { 
+                id: 'divine-power', 
+                name: 'Divine Power', 
+                description: 'Examine the connection between royalty and divinity, and how rulers used religious authority to legitimize their power.',
+                driveId: '1AmTbc3umf8CTDvpfugEUtZvXgRWcsMNH',
+                duration: '19:05',
+                icon: 'fas fa-praying-hands'
+            },
+            { 
+                id: 'royal-hunts', 
+                name: 'Royal Hunts', 
+                description: 'Follow royal hunting traditions that served as both sport and displays of courage, skill, and dominance over nature.',
+                driveId: '1HPorkRFgpxX8cSw19DAMmMyDj8h9Ap2I',
+                duration: '14:50',
+                icon: 'fas fa-paw'
+            },
+            { 
+                id: 'court-culture', 
+                name: 'Court Culture', 
+                description: 'Immerse yourself in the etiquette, fashion, and social customs that defined life in royal courts throughout history.',
+                driveId: '1pK1ZgiRU-RZNyvV7hBRz33mreM3TUm6o',
+                duration: '16:20',
+                icon: 'fas fa-theater-masks'
+            }
+        ];
+
+        // DOM elements
+        const mainVideo = document.getElementById('main-video');
+        const currentVideoTitle = document.getElementById('current-video-title');
+        const currentVideoDescription = document.getElementById('current-video-description');
+        const playlistItems = document.getElementById('playlist-items');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        let currentVideoIndex = 0;
+
+        // Generate playlist items
+        function generatePlaylist() {
+            videos.forEach((video, index) => {
+                const playlistItem = document.createElement('div');
+                playlistItem.className = `playlist-item ${index === 0 ? 'active' : ''}`;
+                playlistItem.dataset.videoId = video.id;
+                playlistItem.dataset.index = index;
+                
+                playlistItem.innerHTML = `
+                    <div class="video-thumb">
+                        <i class="${video.icon}"></i>
+                    </div>
+                    <div class="video-details">
+                        <div class="video-name">${video.name}</div>
+                        <div class="video-duration">${video.duration}</div>
+                    </div>
+                `;
+                
+                playlistItem.addEventListener('click', () => {
+                    playVideoByIndex(index);
+                });
+                
+                playlistItems.appendChild(playlistItem);
+            });
+        }
+
+        // Play video by index
+        function playVideoByIndex(index) {
+            if (index < 0) index = videos.length - 1;
+            if (index >= videos.length) index = 0;
+            
+            currentVideoIndex = index;
+            const video = videos[index];
+            
+            // Update active playlist item
+            document.querySelectorAll('.playlist-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`.playlist-item[data-index="${index}"]`).classList.add('active');
+            
+            // Update video player
+            mainVideo.src = `https://drive.google.com/file/d/${video.driveId}/preview`;
+            currentVideoTitle.textContent = video.name;
+            currentVideoDescription.textContent = video.description;
+            
+            // Scroll the active item into view
+            document.querySelector(`.playlist-item[data-index="${index}"]`).scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest'
+            });
+        }
+
+        // Play selected video
+        function playVideo(videoId) {
+            const index = videos.findIndex(video => video.id === videoId);
+            if (index !== -1) {
+                playVideoByIndex(index);
+            }
+        }
+
+        // Event listeners for navigation buttons
+        prevBtn.addEventListener('click', () => {
+            playVideoByIndex(currentVideoIndex - 1);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            playVideoByIndex(currentVideoIndex + 1);
+        });
+
+        // Initialize the page
+        function init() {
+            generatePlaylist();
+            // Set the first video as active
+            if (videos.length > 0) {
+                playVideoByIndex(0);
+            }
+        }
+
+        // Run initialization when page loads
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
