@@ -1,0 +1,12 @@
+{
+  "name": "royal-video-gallery",
+  "version": "1.0.0",
+  "description": "Royal Legacy Video Gallery",
+  "scripts": {
+    "dev": "python3 -m http.server 3000",
+    "build": "echo 'No build process needed for static site'"
+  },
+  "keywords": ["video", "gallery", "royal"],
+  "author": "Your Name",
+  "license": "MIT"
+}
